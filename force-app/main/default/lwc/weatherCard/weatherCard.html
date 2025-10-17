@@ -1,0 +1,49 @@
+<template>
+    <lightning-card title="Weather Lookup" icon-name="action:new_custom3">
+      <div class="slds-p-around_medium">
+        <lightning-input
+          label="Enter City Name"
+          value={city}
+          onchange={handleCityChange}
+          placeholder="e.g., San Francisco">
+        </lightning-input>
+
+        <lightning-button
+          label="Get Weather"
+          variant="brand"
+          class="slds-m-top_small"
+          onclick={fetchWeather}
+          disabled={isLoading}>
+        </lightning-button>
+
+        <template if:true={weather}>
+          <div class="slds-m-top_medium">
+            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
+              <lightning-icon icon-name="action:map" size="x-small" class="slds-m-right_x-small" alternative-text="City" title="City"></lightning-icon>
+              <strong>{weather.name}</strong>
+            </p>
+            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
+              <lightning-icon icon-name="action:description" size="x-small" class="slds-m-right_x-small" alternative-text="Description" title="Description"></lightning-icon>
+              {description}
+            </p>
+            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
+              <lightning-icon icon-name="action:new_custom97" size="x-small" class="slds-m-right_x-small" alternative-text="Temperature" title="Temperature"></lightning-icon>
+              Temperature: {weather.main.temp} °F
+            </p>
+            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
+              <lightning-icon icon-name="action:new_custom3" size="x-small" class="slds-m-right_x-small" alternative-text="Humidity" title="Humidity"></lightning-icon>
+              Humidity: {weather.main.humidity}%
+            </p>
+            <p class="slds-grid slds-grid_vertical-align-center">
+              <lightning-icon icon-name="action:new_custom2" size="x-small" class="slds-m-right_x-small" alternative-text="Wind" title="Wind"></lightning-icon>
+              Wind Speed: {weather.wind.speed} mph
+            </p>
+          </div>
+        </template>
+
+        <template if:true={error}>
+          <p class="slds-text-color_error slds-m-top_medium">{error}</p>
+        </template>
+      </div>
+    </lightning-card>
+</template>
