@@ -7,17 +7,17 @@ A Salesforce DX project demonstrating a Lightning Web Component (LWC) that fetch
 - Tests: `WeatherSearchControllerTest` (Apex) and `weatherCard.test.js` (Jest)
 
 ## Table of Contents
-- Overview
-- Architecture
-- Local Setup
-- Org Setup and Deployment
-- Running and Testing
-- Configuration and Environment
-- Security and Permissions
-- Project Structure
-- Extensibility Guide
-- Troubleshooting
-- License
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Local Setup](#local-setup)
+- [Org Setup and Deployment](#org-setup-and-deployment)
+- [Running and Testing](#running-and-testing)
+- [Configuration and Environment](#configuration-and-environment)
+- [Security and Permissions](#security-and-permissions)
+- [Project Structure](#project-structure)
+- [Extensibility Guide](#extensibility-guide)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 ## Overview
 This app provides a simple UI to search and view weather details. The `weatherCard` LWC calls the `WeatherSearchController` Apex class which performs an HTTP callout to a weather API (mocked for tests). The codebase follows Salesforce best practices: bulkification patterns, separation of concerns, mocks for callouts, and unit tests.
