@@ -16,6 +16,10 @@ export default class WeatherCard extends LightningElement {
   // guard to prevent multiple automatic fetches from reactive re-wires
   hasAutoFetched = false;
 
+  get hasResults() {
+    return !!this.weather;
+  }
+
   // flag to know if user manually typed and overrode auto-detected city
   userOverrode = false;
 
@@ -87,6 +91,19 @@ export default class WeatherCard extends LightningElement {
   handleKeyUp(event) {
     if (event.key === 'Enter') {
       this.fetchWeather();
+    }
+  }
+
+  handleClear() {
+    this.weather = null;
+    this.error = null;
+    this.description = null;
+    this.userOverrode = false;
+    // If we are on a record with detected city, allow auto-fetch to run again
+    this.hasAutoFetched = false;
+    // If a record city was previously set, keep it; otherwise clear input
+    if (!this.recordId || !this.objectApiName) {
+      this.city = '';
     }
   }
 

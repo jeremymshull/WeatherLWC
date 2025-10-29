@@ -1,56 +1,116 @@
 <template>
-    <lightning-card title="Weather Lookup" icon-name="action:new_custom3">
-      <div class="slds-p-around_medium">
-        <lightning-input
-          label="Enter City Name"
-          value={city}
-          onchange={handleCityChange}
-          onkeyup={handleKeyUp}
-          placeholder="e.g., San Francisco">
-        </lightning-input>
+  <lightning-card title="Weather Lookup" icon-name="action:web_link">
+    <div class="slds-p-around_medium">
+      <!-- Input + Actions -->
+      <div class="slds-grid slds-wrap slds-gutters slds-var-m-bottom_small">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-3">
+          <lightning-input
+            label="Enter City Name"
+            value={city}
+            onchange={handleCityChange}
+            onkeyup={handleKeyUp}
+            placeholder="e.g., San Francisco, Chicago, Miami">
+          </lightning-input>
+          <template if:true={sourcedFromRecordNote}>
+            <div class="slds-text-color_weak slds-m-top_x-small">
+              {sourcedFromRecordNote}
+            </div>
+          </template>
+        </div>
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-3 slds-align_absolute-center slds-m-top_small slds-large-m-top_none">
+          <lightning-button
+            label="Get Weather"
+            variant="brand"
+            class="slds-m-right_x-small"
+            onclick={fetchWeather}
+            disabled={isLoading}>
+          </lightning-button>
+          <lightning-button
+            label="Clear"
+            variant="neutral"
+            onclick={handleClear}
+            disabled={isLoading}>
+          </lightning-button>
+        </div>
+      </div>
 
-        <template if:true={sourcedFromRecordNote}>
-          <div class="slds-text-color_weak slds-m-top_x-small">
-            {sourcedFromRecordNote}
+      <!-- Error State -->
+      <template if:true={error}>
+        <div class="slds-notify slds-notify_alert slds-theme_error slds-m-bottom_small" role="alert">
+          <span class="slds-assistive-text">Error</span>
+          <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="error">
+            <lightning-icon icon-name="utility:error" size="x-small" alternative-text="Error"></lightning-icon>
+          </span>
+          <h2 class="slds-truncate" title={error}>{error}</h2>
+        </div>
+      </template>
+
+      <!-- Results -->
+      <div aria-live="polite" class="results-region">
+        <template if:true={hasResults}>
+          <!-- Header summary -->
+          <div class="slds-grid slds-wrap slds-m-bottom_small slds-var-p-around_small card-header">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-3">
+              <div class="slds-text-heading_medium slds-truncate slds-grid slds-grid_vertical-align-center" title={weather.name}>
+                <lightning-icon icon-name="action:map" size="x-small" class="slds-m-right_x-small" alternative-text="City" title="City"></lightning-icon>
+                {weather.name}
+              </div>
+              <div class="slds-m-top_x-small">
+                <lightning-badge label={description}></lightning-badge>
+              </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-text-align_right">
+              <div class="temperature-display">
+                {weather.main.temp} °F
+              </div>
+              <div class="slds-text-color_weak slds-text-body_small">Feels like {weather.main.feels_like} °F</div>
+            </div>
+          </div>
+
+          <!-- Metrics grid -->
+          <div class="slds-grid slds-wrap slds-gutters metrics-grid">
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+              <div class="metric-row">
+                <lightning-icon icon-name="action:new_custom97" size="small" class="slds-m-right_small" alternative-text="Temperature"></lightning-icon>
+                <div>
+                  <div class="slds-text-title">Temperature</div>
+                  <div class="slds-text-heading_small">{weather.main.temp} °F</div>
+                </div>
+              </div>
+              <div class="metric-row">
+                <lightning-icon icon-name="action:description" size="small" class="slds-m-right_small" alternative-text="Description"></lightning-icon>
+                <div>
+                  <div class="slds-text-title">Conditions</div>
+                  <div class="slds-text-heading_small slds-truncate" title={description}>{description}</div>
+                </div>
+              </div>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+              <div class="metric-row">
+                <lightning-icon icon-name="action:new_custom3" size="small" class="slds-m-right_small" alternative-text="Humidity"></lightning-icon>
+                <div>
+                  <div class="slds-text-title">Humidity</div>
+                  <div class="slds-text-heading_small">{weather.main.humidity}%</div>
+                </div>
+              </div>
+              <div class="metric-row">
+                <lightning-icon icon-name="action:new_custom2" size="small" class="slds-m-right_small" alternative-text="Wind"></lightning-icon>
+                <div>
+                  <div class="slds-text-title">Wind Speed</div>
+                  <div class="slds-text-heading_small">{weather.wind.speed} mph</div>
+                </div>
+              </div>
+            </div>
           </div>
         </template>
 
-        <lightning-button
-          label="Get Weather"
-          variant="brand"
-          class="slds-m-top_small"
-          onclick={fetchWeather}
-          disabled={isLoading}>
-        </lightning-button>
-
-        <template if:true={weather}>
-          <div class="slds-m-top_medium">
-            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
-              <lightning-icon icon-name="action:map" size="x-small" class="slds-m-right_x-small" alternative-text="City" title="City"></lightning-icon>
-              <strong>{weather.name}</strong>
-            </p>
-            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
-              <lightning-icon icon-name="action:description" size="x-small" class="slds-m-right_x-small" alternative-text="Description" title="Description"></lightning-icon>
-              {description}
-            </p>
-            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
-              <lightning-icon icon-name="action:new_custom97" size="x-small" class="slds-m-right_x-small" alternative-text="Temperature" title="Temperature"></lightning-icon>
-              Temperature: {weather.main.temp} °F
-            </p>
-            <p class="slds-m-bottom_x-small slds-grid slds-grid_vertical-align-center">
-              <lightning-icon icon-name="action:new_custom3" size="x-small" class="slds-m-right_x-small" alternative-text="Humidity" title="Humidity"></lightning-icon>
-              Humidity: {weather.main.humidity}%
-            </p>
-            <p class="slds-grid slds-grid_vertical-align-center">
-              <lightning-icon icon-name="action:new_custom2" size="x-small" class="slds-m-right_x-small" alternative-text="Wind" title="Wind"></lightning-icon>
-              Wind Speed: {weather.wind.speed} mph
-            </p>
+        <!-- Loading State -->
+        <template if:true={isLoading}>
+          <div class="slds-is-relative slds-m-top_medium slds-m-bottom_medium">
+            <lightning-spinner alternative-text="Loading weather" size="small"></lightning-spinner>
           </div>
-        </template>
-
-        <template if:true={error}>
-          <p class="slds-text-color_error slds-m-top_medium">{error}</p>
         </template>
       </div>
-    </lightning-card>
+    </div>
+  </lightning-card>
 </template>
