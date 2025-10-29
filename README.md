@@ -223,4 +223,4 @@ Planned ideas (not yet implemented):
   - Use `sf project deploy start --verbose` for more details.
 
 ## License
-MIT or project-specific license. Update as needed.
+MIT
