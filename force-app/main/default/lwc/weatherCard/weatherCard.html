@@ -8,6 +8,12 @@
           placeholder="e.g., San Francisco">
         </lightning-input>
 
+        <template if:true={sourcedFromRecordNote}>
+          <div class="slds-text-color_weak slds-m-top_x-small">
+            {sourcedFromRecordNote}
+          </div>
+        </template>
+
         <lightning-button
           label="Get Weather"
           variant="brand"
